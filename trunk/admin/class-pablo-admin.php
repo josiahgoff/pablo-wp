@@ -27,30 +27,40 @@ class Pablo_Admin {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $pablo    The ID of this plugin.
+	 * @var      string $plugin_name The ID of this plugin.
 	 */
-	private $pablo;
+	private $plugin_name;
 
 	/**
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
+	 * @var      string $version The current version of this plugin.
 	 */
 	private $version;
+
+	/**
+	 * The settings page screen hook suffix.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string $plugin_screen_hook_suffix The screen hook suffix.
+	 */
+	private $plugin_screen_hook_suffix;
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $pablo       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 *
+	 * @param      string $plugin_name The name of this plugin.
+	 * @param      string $version The version of this plugin.
 	 */
-	public function __construct( $pablo, $version ) {
+	public function __construct( $plugin_name, $version ) {
 
-		$this->pablo = $pablo;
-		$this->version = $version;
+		$this->plugin_name = $plugin_name;
+		$this->version     = $version;
 
 	}
 
@@ -73,7 +83,22 @@ class Pablo_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->pablo, plugin_dir_url( __FILE__ ) . 'css/pablo-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style(
+			$this->plugin_name,
+			plugin_dir_url( __FILE__ ) . 'css/pablo-admin.css',
+			array(),
+			$this->version,
+			'all'
+		);
+
+		// Lightbox
+		wp_enqueue_style(
+			'magnific-popup',
+			plugin_dir_url( __FILE__ ) . 'libs/magnific/magnific-popup.css',
+			array(),
+			'1.0.0',
+			'all'
+		);
 
 	}
 
@@ -96,7 +121,54 @@ class Pablo_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->pablo, plugin_dir_url( __FILE__ ) . 'js/pablo-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script(
+			$this->plugin_name,
+			plugin_dir_url( __FILE__ ) . 'js/pablo-admin.js',
+			array( 'jquery', 'magnific-popup' ),
+			$this->version,
+			false
+		);
+
+		// Lightbox
+		wp_enqueue_script(
+			'magnific-popup',
+			plugin_dir_url( __FILE__ ) . 'libs/magnific/jquery.magnific-popup.min.js',
+			array( 'jquery' ),
+			'1.0.0',
+			false
+		);
+
+	}
+
+	/**
+	 * Add an options page under the Settings submenu
+	 *
+	 * @since  1.0.0
+	 */
+	public function add_options_page() {
+
+		$this->plugin_screen_hook_suffix = add_options_page(
+			__( 'Pablo Settings', $this->plugin_name ),
+			__( 'Pablo', $this->plugin_name ),
+			'manage_options',
+			$this->plugin_name,
+			array( $this, 'display_options_page' )
+		);
+
+	}
+
+	/**
+	 * Render the options page for plugin
+	 *
+	 * @since  1.0.0
+	 */
+	public function display_options_page() {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+		}
+
+		include_once 'partials/pablo-admin-display.php';
 
 	}
 

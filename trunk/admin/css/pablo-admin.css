@@ -2,3 +2,18 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.white-popup {
+    position: relative;
+    background: #FFF;
+    padding: 20px;
+    width: auto;
+    max-width: 500px;
+    margin: 20px auto;
+}
+.mfp-bg {
+    z-index: 999998 !important; /* override admin bar */
+}
+.mfp-wrap {
+    z-index: 999999 !important; /* override admin bar */
+}

@@ -13,4 +13,15 @@
  */
 ?>
 
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
+<div class="wrap">
+	<h1>Hellow!</h1>
+
+	<button class="js-pablo-modal button button-primary button-large">Open modal</button>
+
+	<div id="test-modal" class="white-popup mfp-hide">
+		<h1>Modal dialog</h1>
+		<p>You won't be able to dismiss this by usual means (escape or
+			click button), but you can close it programatically based on
+			user choices or actions.</p>
+	</div>
+</div>

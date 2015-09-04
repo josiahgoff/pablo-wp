@@ -35,7 +35,7 @@ class Pablo {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Pablo_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Pablo_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -44,16 +44,16 @@ class Pablo {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $pablo    The string used to uniquely identify this plugin.
+	 * @var      string $pablo The string used to uniquely identify this plugin.
 	 */
-	protected $pablo;
+	protected $plugin_name;
 
 	/**
 	 * The current version of the plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -68,8 +68,8 @@ class Pablo {
 	 */
 	public function __construct() {
 
-		$this->pablo = 'pablo';
-		$this->version = '1.0.0';
+		$this->plugin_name = 'pablo';
+		$this->version     = '1.0.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -135,7 +135,7 @@ class Pablo {
 	private function set_locale() {
 
 		$plugin_i18n = new Pablo_i18n();
-		$plugin_i18n->set_domain( $this->get_pablo() );
+		$plugin_i18n->set_domain( $this->get_plugin_name() );
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -150,10 +150,11 @@ class Pablo {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Pablo_Admin( $this->get_pablo(), $this->get_version() );
+		$plugin_admin = new Pablo_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_options_page' );
 
 	}
 
@@ -166,7 +167,7 @@ class Pablo {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Pablo_Public( $this->get_pablo(), $this->get_version() );
+		$plugin_public = new Pablo_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -189,8 +190,8 @@ class Pablo {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_pablo() {
-		return $this->pablo;
+	public function get_plugin_name() {
+		return $this->plugin_name;
 	}
 
 	/**
