@@ -172,4 +172,8 @@ class Pablo_Admin {
 
 	}
 
+	public function add_editor_button() {
+		echo '<a href="#" id="pablo-button" class="js-pablo-modal button"><span class="smiley-icon"></span> Pablo</a>';
+	}
+
 }

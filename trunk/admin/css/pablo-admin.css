@@ -17,3 +17,9 @@
 .mfp-wrap {
     z-index: 999999 !important; /* override admin bar */
 }
+.smiley-icon:before {
+    content: "\f328";
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    font: normal 16px/1 'dashicons';
+}
