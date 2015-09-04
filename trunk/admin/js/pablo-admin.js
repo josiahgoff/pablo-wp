@@ -20,7 +20,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
 
     className: 'pablo-app',
 
-    initialize: function() {
+    initialize: function () {
     },
 
     render: function () {
@@ -47,7 +47,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
       'keyup .pablo-text': 'updateText'
     },
 
-    initialize: function() {
+    initialize: function () {
     },
 
     render: function () {
@@ -56,7 +56,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
       return this;
     },
 
-    updateText: function(e) {
+    updateText: function (e) {
       var text = $(e.target).val();
       console.log(text);
       this.model.set('text', text);
@@ -68,7 +68,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
 
     className: 'pablo-preview',
 
-    initialize: function() {
+    initialize: function () {
       this.model.on('change', this.render, this);
     },
 
@@ -84,13 +84,21 @@ Pablo.Events = _.extend({}, Backbone.Events);
 
     className: 'pablo-actions',
 
-    initialize: function() {
+    initialize: function () {
+    },
+
+    events: {
+      'click .pablo-button-cancel': 'cancel'
     },
 
     render: function () {
       this.$el.html(this.template(this.model.toJSON()));
 
       return this;
+    },
+
+    cancel: function () {
+      Pablo.Events.trigger('pablo:cancel');
     }
   });
 
@@ -102,6 +110,8 @@ Pablo.Events = _.extend({}, Backbone.Events);
     initialize: function () {
       this.popup = $.magnificPopup.instance;
       this.appView = new Pablo.Views.App({model: new Pablo.Models.Image});
+
+      Pablo.Events.on('pablo:cancel', this.close, this);
     },
 
     render: function () {
@@ -121,6 +131,10 @@ Pablo.Events = _.extend({}, Backbone.Events);
       }, 0);
 
       return this;
+    },
+
+    close: function () {
+      this.popup.close();
     }
   });
 
