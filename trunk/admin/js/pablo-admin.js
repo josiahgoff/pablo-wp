@@ -3,7 +3,7 @@ Pablo.Models = Pablo.Models || {};
 Pablo.Views = Pablo.Views || {};
 Pablo.Events = _.extend({}, Backbone.Events);
 
-(function ($, Backbone, _, window, undefined) {
+(function ($, Backbone, _, tinyMCE, window, undefined) {
   'use strict';
 
   window.wp = window.wp || {};
@@ -109,7 +109,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
 
     initialize: function () {
       this.popup = $.magnificPopup.instance;
-      this.appView = new Pablo.Views.App({model: new Pablo.Models.Image});
+      this.appView = new Pablo.Views.App({model: this.model});
 
       Pablo.Events.on('pablo:cancel', this.close, this);
     },
@@ -141,8 +141,17 @@ Pablo.Events = _.extend({}, Backbone.Events);
   $(document).ready(function () {
 
     $('.js-pablo-modal').click(function () {
-      var modal = new Pablo.Views.Modal().render();
+      var data = {},
+        text = tinyMCE.activeEditor.selection.getContent({format: 'text'}),
+        imageModel, modal;
+
+      if (!_.isEmpty(text)) {
+        data.text = text;
+      }
+
+      imageModel = new Pablo.Models.Image(data);
+      modal = new Pablo.Views.Modal({model: imageModel}).render();
     });
 
   });
-})(jQuery, Backbone, _, window, undefined);
+})(jQuery, Backbone, _, tinyMCE, window, undefined);
