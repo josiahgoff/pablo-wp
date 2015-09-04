@@ -124,7 +124,7 @@ class Pablo_Admin {
 		wp_enqueue_script(
 			$this->plugin_name,
 			plugin_dir_url( __FILE__ ) . 'js/pablo-admin.js',
-			array( 'jquery', 'magnific-popup' ),
+			array( 'wp-util', 'backbone', 'jquery', 'magnific-popup' ),
 			$this->version,
 			false
 		);
@@ -174,6 +174,10 @@ class Pablo_Admin {
 
 	public function add_editor_button() {
 		echo '<a href="#" id="pablo-button" class="js-pablo-modal button"><span class="smiley-icon"></span> Pablo</a>';
+	}
+
+	public function js_templates() {
+		include_once 'partials/js-templates.php';
 	}
 
 }

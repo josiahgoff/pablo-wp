@@ -1,44 +1,134 @@
-var pablo = pablo || {};
+window.Pablo = window.Pablo || {};
+Pablo.Models = Pablo.Models || {};
+Pablo.Views = Pablo.Views || {};
+Pablo.Events = _.extend({}, Backbone.Events);
 
-(function ($, undefined) {
+(function ($, Backbone, _, window, undefined) {
   'use strict';
 
-  /**
-   * All of the code for your admin-specific JavaScript source
-   * should reside in this file.
-   *
-   * Note that this assume you're going to use jQuery, so it prepares
-   * the $ function reference to be used within the scope of this
-   * function.
-   *
-   * From here, you're able to define handlers for when the DOM is
-   * ready:
-   *
-   * $(function() {
-	 *
-	 * });
-   *
-   * Or when the window is loaded:
-   *
-   * $( window ).load(function() {
-	 *
-	 * });
-   *
-   * ...and so on.
-   *
-   * Remember that ideally, we should not attach any more than a single DOM-ready or window-load handler
-   * for any particular page. Though other scripts in WordPress core, other plugins, and other themes may
-   * be doing this, we should try to minimize doing that in our own work.
-   */
+  window.wp = window.wp || {};
+
+  Pablo.Models.Image = Backbone.Model.extend({
+    defaults: {
+      text: '“Our lives begin to end the day we become silent about things that matter.”\r\n\r\n– Martin Luther King Jr.',
+      img: '//d3ijcis4e2ziok.cloudfront.net/engaging-images-backgrounds/batch-2-full-size/16.jpg'
+    }
+  });
+
+  Pablo.Views.App = Backbone.View.extend({
+    template: wp.template('pablo-app'),
+
+    className: 'pablo-app',
+
+    initialize: function() {
+    },
+
+    render: function () {
+      this.$el.html(this.template(this.model.toJSON()));
+
+      this.controlsView = new Pablo.Views.Controls({model: this.model});
+      this.previewView = new Pablo.Views.Preview({model: this.model});
+      this.actionsView = new Pablo.Views.Actions({model: this.model});
+
+      this.$el.find('.pablo-app-main').append(this.controlsView.render().el);
+      this.$el.find('.pablo-app-main').append(this.previewView.render().el);
+      this.$el.find('.pablo-app-footer').html(this.actionsView.render().el);
+
+      return this;
+    }
+  });
+
+  Pablo.Views.Controls = Backbone.View.extend({
+    template: wp.template('pablo-controls'),
+
+    className: 'pablo-controls',
+
+    events: {
+      'keyup .pablo-text': 'updateText'
+    },
+
+    initialize: function() {
+    },
+
+    render: function () {
+      this.$el.html(this.template(this.model.toJSON()));
+
+      return this;
+    },
+
+    updateText: function(e) {
+      var text = $(e.target).val();
+      console.log(text);
+      this.model.set('text', text);
+    }
+  });
+
+  Pablo.Views.Preview = Backbone.View.extend({
+    template: wp.template('pablo-preview'),
+
+    className: 'pablo-preview',
+
+    initialize: function() {
+      this.model.on('change', this.render, this);
+    },
+
+    render: function () {
+      this.$el.html(this.template(this.model.toJSON()));
+
+      return this;
+    }
+  });
+
+  Pablo.Views.Actions = Backbone.View.extend({
+    template: wp.template('pablo-actions'),
+
+    className: 'pablo-actions',
+
+    initialize: function() {
+    },
+
+    render: function () {
+      this.$el.html(this.template(this.model.toJSON()));
+
+      return this;
+    }
+  });
+
+  Pablo.Views.Modal = Backbone.View.extend({
+    template: wp.template('pablo-modal'),
+
+    className: 'pablo-popup',
+
+    initialize: function () {
+      this.popup = $.magnificPopup.instance;
+      this.appView = new Pablo.Views.App({model: new Pablo.Models.Image});
+    },
+
+    render: function () {
+      var _this;
+
+      this.$el.html(this.template({}));
+      this.$el.find('.pablo-wrap').html(this.appView.render().el);
+
+      // Trigger popup
+      _this = this;
+      this.popup.open({
+        items: {
+          src: _this.el
+        },
+        modal: true,
+        type: 'inline'
+      }, 0);
+
+      return this;
+    }
+  });
 
   $(document).ready(function () {
 
-    $('.js-pablo-modal').magnificPopup({
-      items: {
-        type: 'inline',
-        src: '#test-modal',
-      }
+    $('.js-pablo-modal').click(function () {
+      var modal = new Pablo.Views.Modal().render();
     });
 
   });
-})(jQuery, undefined);
+})(jQuery, Backbone, _, window, undefined);
