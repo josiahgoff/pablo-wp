@@ -1,2 +1,3 @@
-# pablo-wp
+# Pablo WP
+
 The unofficial Pablo WordPress plugin
