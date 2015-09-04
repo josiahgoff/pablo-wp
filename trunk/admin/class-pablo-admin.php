@@ -27,9 +27,9 @@ class Pablo_Admin {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string    $pablo    The ID of this plugin.
 	 */
-	private $plugin_name;
+	private $pablo;
 
 	/**
 	 * The version of this plugin.
@@ -44,12 +44,12 @@ class Pablo_Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
+	 * @param      string    $pablo       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $pablo, $version ) {
 
-		$this->plugin_name = $plugin_name;
+		$this->pablo = $pablo;
 		$this->version = $version;
 
 	}
@@ -73,7 +73,7 @@ class Pablo_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/pablo-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->pablo, plugin_dir_url( __FILE__ ) . 'css/pablo-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -96,7 +96,7 @@ class Pablo_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/pablo-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->pablo, plugin_dir_url( __FILE__ ) . 'js/pablo-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
 
