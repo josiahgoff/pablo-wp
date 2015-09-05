@@ -12,7 +12,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
   Pablo.Models.Image = Backbone.Model.extend({
     defaults: {
       text: '“When people go to work, they shouldn\'t have to leave their hearts at home.”\r\n\r\n– Betty Bender',
-      img: '//d3ijcis4e2ziok.cloudfront.net/engaging-images-backgrounds/batch-2-full-size/16.jpg'
+      img: '//d3ijcis4e2ziok.cloudfront.net/engaging-images-backgrounds/batch-2-full-size/48.jpg'
     }
   });
 
@@ -102,8 +102,11 @@ Pablo.Events = _.extend({}, Backbone.Events);
         _this.$el.drawImage({
           source: _this.model.get('img'),
           width: 400 * ratio,
-          height: 240 * ratio
+          height: 240 * ratio,
+          layer: true,
+          bringToFront: false
         }).drawRect({
+          layer: true,
           fillStyle: 'rgba(0, 0, 0, 0.25)',
           width: 400 * ratio,
           height: 240 * ratio
@@ -116,7 +119,10 @@ Pablo.Events = _.extend({}, Backbone.Events);
           text: _this.model.get('text'),
           maxWidth: 310,
           align: 'left',
-          respectAlign: true
+          respectAlign: true,
+          layer: true,
+          draggable: true,
+          bringToFront: true,
         });
       });
 
