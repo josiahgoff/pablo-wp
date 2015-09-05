@@ -168,7 +168,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
         _this.textLayer = _this.$el.getLayer('text');
       }
 
-      _this.$el.setLayer(_this.textLayer,{
+      _this.$el.setLayer(_this.textLayer, {
         text: _this.model.get('text')
       });
 
@@ -254,7 +254,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
       var data = {},
         text = tinyMCE.activeEditor.selection.getContent({format: 'text'});
 
-      if (!_.isEmpty(text)) {
+      if (! _.isEmpty(text)) {
         data.text = text;
       }
 
