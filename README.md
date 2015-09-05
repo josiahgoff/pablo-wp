@@ -2,7 +2,7 @@
 
 The unofficial Pablo WordPress plugin. Right now it's in prototype phase, sort of a proof of concept of how it would work.
 
-![Screenshot](http://i.imgur.com/J1Z93Dg.gif)
+![Screenshot](assets/pablo-wp-screenshot.gif)
 
 
 ## Installation
