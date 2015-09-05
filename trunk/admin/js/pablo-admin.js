@@ -25,9 +25,17 @@ Pablo.Events = _.extend({}, Backbone.Events);
     initialize: function () {
       Pablo.Events.on('pablo:imageProcessed', this.insertImage, this);
 
-      Pablo.controlsView = new Pablo.Views.Controls({model: this.model});
-      Pablo.previewView = new Pablo.Views.Preview({model: this.model});
-      Pablo.actionsView = new Pablo.Views.Actions({model: this.model});
+      if (! Pablo.controlsView) {
+        Pablo.controlsView = new Pablo.Views.Controls({model: this.model});
+      }
+
+      if (! Pablo.previewView) {
+        Pablo.previewView = new Pablo.Views.Preview({model: this.model});
+      }
+
+      if (! Pablo.actionsView) {
+        Pablo.actionsView = new Pablo.Views.Actions({model: this.model});
+      }
     },
 
     render: function () {
@@ -239,20 +247,28 @@ Pablo.Events = _.extend({}, Backbone.Events);
     }
   });
 
+  // Bootstrap it
   $(document).ready(function () {
 
     $('.js-pablo-modal').click(function () {
       var data = {},
-        text = tinyMCE.activeEditor.selection.getContent({format: 'text'}),
-        imageModel,
-        modal;
+        text = tinyMCE.activeEditor.selection.getContent({format: 'text'});
 
       if (!_.isEmpty(text)) {
         data.text = text;
       }
 
-      imageModel = new Pablo.Models.Image(data);
-      modal = new Pablo.Views.Modal({model: imageModel}).render();
+      if (! Pablo.imageModel) {
+        Pablo.imageModel = new Pablo.Models.Image(data);
+      } else {
+        Pablo.imageModel.set(data);
+      }
+
+      if (! Pablo.modalView) {
+        Pablo.modalView = new Pablo.Views.Modal({model: Pablo.imageModel}).render();
+      } else {
+        Pablo.modalView.render();
+      }
     });
 
   });
