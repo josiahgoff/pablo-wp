@@ -8,11 +8,12 @@ Pablo.Events = _.extend({}, Backbone.Events);
 
   window.wp = window.wp || {};
   window.tinyMCE = window.tinyMCE || {};
+  window.pablo = window.pablo || {};
 
   Pablo.Models.Image = Backbone.Model.extend({
     defaults: {
       text: '“When people go to work, they shouldn\'t have to leave their hearts at home.”\r\n\r\n– Betty Bender',
-      img: '//d3ijcis4e2ziok.cloudfront.net/engaging-images-backgrounds/batch-2-full-size/48.jpg'
+      img: pablo.imgUrl
     }
   });
 
@@ -22,6 +23,8 @@ Pablo.Events = _.extend({}, Backbone.Events);
     className: 'pablo-app',
 
     initialize: function () {
+      Pablo.Events.on('pablo:imageProcessed', this.insertImage, this);
+
       Pablo.controlsView = new Pablo.Views.Controls({model: this.model});
       Pablo.previewView = new Pablo.Views.Preview({model: this.model});
       Pablo.actionsView = new Pablo.Views.Actions({model: this.model});
@@ -35,6 +38,20 @@ Pablo.Events = _.extend({}, Backbone.Events);
       this.$el.find('.pablo-app-footer').html(Pablo.actionsView.render().el);
 
       return this;
+    },
+
+    insertImage: function (image) {
+      var editor = tinyMCE.activeEditor,
+        imgNode = editor.getDoc().createElement('img');
+
+      // Create the image
+      imgNode.src = image;
+
+      // Deselect any text so the img doesn't replace it
+      editor.selection.collapse();
+      editor.execCommand('mceInsertContent', false, imgNode.outerHTML);
+
+      Pablo.Events.trigger('pablo:imageInserted');
     }
   });
 
@@ -67,12 +84,15 @@ Pablo.Events = _.extend({}, Backbone.Events);
     className: 'pablo-preview',
 
     initialize: function () {
-      this.model.on('change', this.render, this);
     },
 
     render: function () {
-      // First add html
-      Pablo.canvasView = new Pablo.Views.Canvas({model: this.model});
+      // First make sure there's only one instance
+      if (! Pablo.canvasView) {
+        Pablo.canvasView = new Pablo.Views.Canvas({model: this.model});
+      }
+
+      // Then add html
       this.$el.html(Pablo.canvasView.el);
 
       // Then render canvas
@@ -93,6 +113,8 @@ Pablo.Events = _.extend({}, Backbone.Events);
     },
 
     initialize: function () {
+      this.model.on('change:text', this.updateText, this);
+      Pablo.Events.on('pablo:submit', this.getCanvasImage, this);
     },
 
     render: function () {
@@ -104,13 +126,15 @@ Pablo.Events = _.extend({}, Backbone.Events);
           width: 400 * ratio,
           height: 240 * ratio,
           layer: true,
-          bringToFront: false
+          bringToFront: false,
+          crossOrigin: 'anonymous'
         }).drawRect({
           layer: true,
           fillStyle: 'rgba(0, 0, 0, 0.25)',
           width: 400 * ratio,
           height: 240 * ratio
         }).drawText({
+          name: 'text',
           fillStyle: '#fff',
           x: 20 * ratio, y: 60 * ratio,
           fontSize: 22,
@@ -122,11 +146,31 @@ Pablo.Events = _.extend({}, Backbone.Events);
           respectAlign: true,
           layer: true,
           draggable: true,
-          bringToFront: true,
+          bringToFront: true
         });
       });
 
-      return this;
+      return _this;
+    },
+
+    updateText: function () {
+      var _this = this;
+
+      if (! _this.textLayer) {
+        _this.textLayer = _this.$el.getLayer('text');
+      }
+
+      _this.$el.setLayer(_this.textLayer,{
+        text: _this.model.get('text')
+      });
+
+      _this.$el.drawLayers();
+    },
+
+    getCanvasImage: function () {
+      var image = this.$el.getCanvasImage('jpeg');
+
+      Pablo.Events.trigger('pablo:imageProcessed', image);
     }
   });
 
@@ -139,6 +183,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
     },
 
     events: {
+      'click .pablo-button-submit': 'submit',
       'click .pablo-button-cancel': 'cancel'
     },
 
@@ -146,6 +191,10 @@ Pablo.Events = _.extend({}, Backbone.Events);
       this.$el.html(this.template(this.model.toJSON()));
 
       return this;
+    },
+
+    submit: function () {
+      Pablo.Events.trigger('pablo:submit');
     },
 
     cancel: function () {
@@ -163,6 +212,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
       Pablo.appView = new Pablo.Views.App({model: this.model});
 
       Pablo.Events.on('pablo:cancel', this.close, this);
+      Pablo.Events.on('pablo:imageInserted', this.close, this);
     },
 
     render: function () {

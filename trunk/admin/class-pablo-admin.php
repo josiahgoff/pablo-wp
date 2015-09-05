@@ -129,6 +129,10 @@ class Pablo_Admin {
 			false
 		);
 
+		wp_localize_script($this->plugin_name, 'pablo', array(
+			'imgUrl' => plugins_url('img/lake.jpg', __FILE__),
+		));
+
 		// Lightbox
 		wp_enqueue_script(
 			'magnific-popup',
