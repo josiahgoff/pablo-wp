@@ -1,6 +1,6 @@
 # Pablo WP
 
-The unofficial Pablo WordPress plugin. Right now it's in prototype phase, sort of a proof of concept of how it would work.
+The unofficial Pablo WordPress plugin. Right now it's in prototype phase, sort of a proof of concept of how it could work.
 
 ![Screenshot](assets/pablo-wp-screenshot.gif)
 
