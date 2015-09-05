@@ -7,7 +7,7 @@ The unofficial Pablo WordPress plugin. Right now it's in prototype phase, sort o
 
 ## Installation
 
-Create a folder in `wp-content/plugins/` called `pablo-wp` and copy the contents of `trunk` into it. Then log into WordPress and activate the Pablo plugin
+Create a folder in `wp-content/plugins/` called `pablo-wp` and copy the contents of `trunk` into it. Then log into WordPress and activate the Pablo plugin.
 
 
 ## Quick Setup
