@@ -3,14 +3,15 @@ Pablo.Models = Pablo.Models || {};
 Pablo.Views = Pablo.Views || {};
 Pablo.Events = _.extend({}, Backbone.Events);
 
-(function ($, Backbone, _, tinyMCE, window, undefined) {
+(function ($, Backbone, _, window, undefined) {
   'use strict';
 
   window.wp = window.wp || {};
+  window.tinyMCE = window.tinyMCE || {};
 
   Pablo.Models.Image = Backbone.Model.extend({
     defaults: {
-      text: '“Our lives begin to end the day we become silent about things that matter.”\r\n\r\n– Martin Luther King Jr.',
+      text: '“When people go to work, they shouldn\'t have to leave their hearts at home.”\r\n\r\n– Betty Bender',
       img: '//d3ijcis4e2ziok.cloudfront.net/engaging-images-backgrounds/batch-2-full-size/16.jpg'
     }
   });
@@ -21,18 +22,17 @@ Pablo.Events = _.extend({}, Backbone.Events);
     className: 'pablo-app',
 
     initialize: function () {
+      Pablo.controlsView = new Pablo.Views.Controls({model: this.model});
+      Pablo.previewView = new Pablo.Views.Preview({model: this.model});
+      Pablo.actionsView = new Pablo.Views.Actions({model: this.model});
     },
 
     render: function () {
       this.$el.html(this.template(this.model.toJSON()));
 
-      this.controlsView = new Pablo.Views.Controls({model: this.model});
-      this.previewView = new Pablo.Views.Preview({model: this.model});
-      this.actionsView = new Pablo.Views.Actions({model: this.model});
-
-      this.$el.find('.pablo-app-main').append(this.controlsView.render().el);
-      this.$el.find('.pablo-app-main').append(this.previewView.render().el);
-      this.$el.find('.pablo-app-footer').html(this.actionsView.render().el);
+      this.$el.find('.pablo-app-main').append(Pablo.controlsView.render().el);
+      this.$el.find('.pablo-app-main').append(Pablo.previewView.render().el);
+      this.$el.find('.pablo-app-footer').html(Pablo.actionsView.render().el);
 
       return this;
     }
@@ -58,14 +58,12 @@ Pablo.Events = _.extend({}, Backbone.Events);
 
     updateText: function (e) {
       var text = $(e.target).val();
-      console.log(text);
+
       this.model.set('text', text);
     }
   });
 
   Pablo.Views.Preview = Backbone.View.extend({
-    template: wp.template('pablo-preview'),
-
     className: 'pablo-preview',
 
     initialize: function () {
@@ -73,7 +71,54 @@ Pablo.Events = _.extend({}, Backbone.Events);
     },
 
     render: function () {
-      this.$el.html(this.template(this.model.toJSON()));
+      // First add html
+      Pablo.canvasView = new Pablo.Views.Canvas({model: this.model});
+      this.$el.html(Pablo.canvasView.el);
+
+      // Then render canvas
+      Pablo.canvasView.render();
+
+      return this;
+    }
+  });
+
+  Pablo.Views.Canvas = Backbone.View.extend({
+    id: 'pablo-canvas',
+
+    tagName: 'canvas',
+
+    attributes: {
+      width: 400,
+      height: 240
+    },
+
+    initialize: function () {
+    },
+
+    render: function () {
+      var _this = this;
+
+      this.$el.detectPixelRatio(function (ratio) {
+        _this.$el.drawImage({
+          source: _this.model.get('img'),
+          width: 400 * ratio,
+          height: 240 * ratio
+        }).drawRect({
+          fillStyle: 'rgba(0, 0, 0, 0.25)',
+          width: 400 * ratio,
+          height: 240 * ratio
+        }).drawText({
+          fillStyle: '#fff',
+          x: 20 * ratio, y: 60 * ratio,
+          fontSize: 22,
+          fontFamily: 'Merriweather, serif',
+          lineHeight: 1.3,
+          text: _this.model.get('text'),
+          maxWidth: 310,
+          align: 'left',
+          respectAlign: true
+        });
+      });
 
       return this;
     }
@@ -109,7 +154,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
 
     initialize: function () {
       this.popup = $.magnificPopup.instance;
-      this.appView = new Pablo.Views.App({model: this.model});
+      Pablo.appView = new Pablo.Views.App({model: this.model});
 
       Pablo.Events.on('pablo:cancel', this.close, this);
     },
@@ -118,7 +163,7 @@ Pablo.Events = _.extend({}, Backbone.Events);
       var _this;
 
       this.$el.html(this.template({}));
-      this.$el.find('.pablo-wrap').html(this.appView.render().el);
+      this.$el.find('.pablo-wrap').html(Pablo.appView.render().el);
 
       // Trigger popup
       _this = this;
@@ -143,7 +188,8 @@ Pablo.Events = _.extend({}, Backbone.Events);
     $('.js-pablo-modal').click(function () {
       var data = {},
         text = tinyMCE.activeEditor.selection.getContent({format: 'text'}),
-        imageModel, modal;
+        imageModel,
+        modal;
 
       if (!_.isEmpty(text)) {
         data.text = text;
@@ -154,4 +200,4 @@ Pablo.Events = _.extend({}, Backbone.Events);
     });
 
   });
-})(jQuery, Backbone, _, tinyMCE, window, undefined);
+})(jQuery, Backbone, _, window, undefined);

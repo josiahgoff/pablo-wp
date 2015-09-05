@@ -12,11 +12,6 @@
 	<textarea name="pablo_text" class="pablo-text">{{data.text}}</textarea>
 </script>
 
-<script type="text/html" id="tmpl-pablo-preview">
-	<img class="pablo-preview-image" src="{{data.img}}" alt="{{data.text}}">
-	<p class="pablo-preview-text">{{data.text}}</p>
-</script>
-
 <script type="text/html" id="tmpl-pablo-actions">
 	<button class="button button-primary button-large pablo-button-submit">Insert</button>
 	<button class="button button-large pablo-button-cancel">Cancel</button>

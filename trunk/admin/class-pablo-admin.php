@@ -124,7 +124,7 @@ class Pablo_Admin {
 		wp_enqueue_script(
 			$this->plugin_name,
 			plugin_dir_url( __FILE__ ) . 'js/pablo-admin.js',
-			array( 'wp-util', 'backbone', 'jquery', 'magnific-popup' ),
+			array( 'wp-util', 'backbone', 'jquery', 'magnific-popup', 'jcanvas' ),
 			$this->version,
 			false
 		);
@@ -135,6 +135,15 @@ class Pablo_Admin {
 			plugin_dir_url( __FILE__ ) . 'libs/magnific/jquery.magnific-popup.min.js',
 			array( 'jquery' ),
 			'1.0.0',
+			false
+		);
+
+		// Canvas
+		wp_enqueue_script(
+			'jcanvas',
+			plugin_dir_url( __FILE__ ) . 'libs/jcanvas/jcanvas.min.js',
+			array( 'jquery' ),
+			'15.09.04',
 			false
 		);
 
