@@ -14,6 +14,10 @@
   Pablo.Views = Pablo.Views || {};
   Pablo.Events = _.extend({}, Backbone.Events);
 
+  /////////////////////////////////////////
+  // Models
+  ////////////////////////////////////////
+
   Pablo.Models.App = Backbone.Model.extend({
     defaults: {
       text: '“When people go to work, they shouldn\'t have to leave their hearts at home.”\r\n\r\n– Betty Bender',
@@ -23,7 +27,7 @@
     initialize: function () {
       this.set('background', this.getRandomImage());
 
-      Pablo.Events.on('pablo:background:selected', this.updateBackground, this);
+      this.listenTo(Pablo.Events, 'pablo:background:selected', this.updateBackground);
     },
 
     updateBackground: function (background) {
@@ -53,9 +57,17 @@
     }
   });
 
+  /////////////////////////////////////////
+  // Collections
+  ////////////////////////////////////////
+
   Pablo.Collections.Backgrounds = Backbone.Collection.extend({
     model: Pablo.Models.Background
   });
+
+  /////////////////////////////////////////
+  // Views
+  ////////////////////////////////////////
 
   Pablo.Views.App = Backbone.View.extend({
     template: wp.template('pablo-app'),
@@ -63,19 +75,22 @@
     className: 'pablo-app',
 
     initialize: function () {
-      Pablo.Events.on('pablo:image:processed', this.insertImage, this);
+      this.listenTo(Pablo.Events, 'pablo:image:processed', this.insertImage);
 
-      if (! Pablo.controlsView) {
-        Pablo.controlsView = new Pablo.Views.Controls({model: this.model});
+      if (Pablo.controlsView) {
+        Pablo.controlsView.remove();
       }
+      Pablo.controlsView = new Pablo.Views.Controls({model: this.model});
 
-      if (! Pablo.previewView) {
-        Pablo.previewView = new Pablo.Views.Preview({model: this.model});
+      if (Pablo.previewView) {
+        Pablo.previewView.remove();
       }
+      Pablo.previewView = new Pablo.Views.Preview({model: this.model});
 
-      if (! Pablo.actionsView) {
-        Pablo.actionsView = new Pablo.Views.Actions({model: this.model});
+      if (Pablo.actionsView) {
+        Pablo.actionsView.remove();
       }
+      Pablo.actionsView = new Pablo.Views.Actions({model: this.model});
     },
 
     render: function () {
@@ -128,9 +143,13 @@
         }
 
         Pablo.backgroundsCollection = new Pablo.Collections.Backgrounds(backgrounds);
-        Pablo.backgroundsListView = new Pablo.Views.BackgroundsList({collection: Pablo.backgroundsCollection});
       }
 
+      // Render backgrounds list view
+      if (Pablo.backgroundsListView) {
+        Pablo.backgroundsListView.remove();
+      }
+      Pablo.backgroundsListView = new Pablo.Views.BackgroundsList({collection: Pablo.backgroundsCollection});
       this.$el.find('.pablo-backgrounds').html(Pablo.backgroundsListView.render().el);
 
       return this;
@@ -195,10 +214,11 @@
     },
 
     render: function () {
-      // First make sure there's only one instance
-      if (! Pablo.canvasView) {
-        Pablo.canvasView = new Pablo.Views.Canvas({model: this.model});
+      // First make sure there's only one instance of the canvas view
+      if (Pablo.canvasView) {
+        Pablo.canvasView.remove();
       }
+      Pablo.canvasView = new Pablo.Views.Canvas({model: this.model});
 
       // Then add html
       this.$el.html(Pablo.canvasView.el);
@@ -225,7 +245,7 @@
 
       this.model.on('change:text', this.updateText, this);
       this.model.on('change:background', this.updateBackground, this);
-      Pablo.Events.on('pablo:submit', this.getCanvasImage, this);
+      this.listenTo(Pablo.Events, 'pablo:submit', this.getCanvasImage);
     },
 
     render: function () {
@@ -247,8 +267,7 @@
           height: 240 * _this.ratio,
           sWidth: bgImg.width * _this.ratio,
           sHeight: bgImg.height * _this.ratio,
-          sx: bgImg.width,
-          sy: bgImg.height,
+          sx: 0, sy: 0,
           cropFromCenter: false,
           layer: true,
           bringToFront: false
@@ -300,7 +319,7 @@
       bgImg.src = _this.model.get('background');
 
       // Wait for image to load to get width/height
-      $(bgImg).on('load',function() {
+      $(bgImg).on('load', function () {
         if (! _this.backgroundLayer) {
           _this.backgroundLayer = _this.$el.getLayer('background');
         }
@@ -308,9 +327,7 @@
         _this.$el.setLayer(_this.backgroundLayer, {
           source: bgImg.src,
           sWidth: bgImg.width * _this.ratio,
-          sHeight: bgImg.height * _this.ratio,
-          sx: bgImg.width,
-          sy: bgImg.height
+          sHeight: bgImg.height * _this.ratio
         });
 
         _this.$el.drawLayers();
@@ -359,10 +376,14 @@
 
     initialize: function () {
       this.popup = $.magnificPopup.instance;
+
+      if (Pablo.appView) {
+        Pablo.appView.remove();
+      }
       Pablo.appView = new Pablo.Views.App({model: this.model});
 
-      Pablo.Events.on('pablo:cancel', this.close, this);
-      Pablo.Events.on('pablo:image:inserted', this.close, this);
+      this.listenTo(Pablo.Events, 'pablo:cancel', this.close);
+      this.listenTo(Pablo.Events, 'pablo:image:inserted', this.close);
     },
 
     render: function () {
@@ -406,11 +427,10 @@
         Pablo.appModel.set(data);
       }
 
-      if (! Pablo.modalView) {
-        Pablo.modalView = new Pablo.Views.Modal({model: Pablo.appModel}).render();
-      } else {
-        Pablo.modalView.render();
+      if (Pablo.modalView) {
+        Pablo.modalView.remove();
       }
+      Pablo.modalView = new Pablo.Views.Modal({model: Pablo.appModel}).render();
     });
 
   });
