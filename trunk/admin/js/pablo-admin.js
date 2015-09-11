@@ -24,7 +24,9 @@
       fontFamily: 'serif',
       fontColor: 'rgb(255, 255, 255)',
       fontSize: 12,
-      background: pablo.imgUrlRoot + '1.jpg'
+      fontStyle: 'normal',
+      background: pablo.imgUrlRoot + '1.jpg',
+      backgroundContrast: true
     },
 
     initialize: function () {
@@ -130,7 +132,9 @@
       'keyup .pablo-text': 'updateText',
       'change .pablo-font-family-select': 'updateFontFamily',
       'change .pablo-font-size-select': 'updateFontSize',
-      'change .pablo-font-color-select': 'updateFontColor'
+      'change .pablo-font-color-select': 'updateFontColor',
+      'change .pablo-font-style-select': 'updateFontStyle',
+      'change .pablo-background-contrast': 'updateBackgroundContrast'
     },
 
     initialize: function () {
@@ -175,6 +179,14 @@
 
     updateFontColor: function (e) {
       this.model.set('fontColor', $(e.target).val());
+    },
+
+    updateFontStyle: function (e) {
+      this.model.set('fontStyle', $(e.target).val());
+    },
+
+    updateBackgroundContrast: function (e) {
+      this.model.set('backgroundContrast', $(e.target).is(':checked'));
     }
   });
 
@@ -259,7 +271,12 @@
     initialize: function () {
       this.ratio = 1;
 
-      this.model.on('change:text change:fontFamily change:fontColor change:fontSize', this.updateText, this);
+      this.model.on(
+        'change:text change:fontFamily change:fontColor change:fontSize change:fontStyle',
+        this.updateText,
+        this
+      );
+      this.model.on('change:backgroundContrast', this.updateContrast, this);
       this.model.on('change:background', this.updateBackground, this);
       this.listenTo(Pablo.Events, 'pablo:submit', this.getCanvasImage);
     },
@@ -288,9 +305,9 @@
           layer: true,
           bringToFront: false
         }).drawRect({
-          name: 'shade',
+          name: 'contrast',
           layer: true,
-          fillStyle: 'rgba(0, 0, 0, 0.25)',
+          fillStyle: _this.model.get('backgroundContrast') ? 'rgba(0, 0, 0, 0.25)' : 'transparent',
           width: 400 * _this.ratio,
           height: 240 * _this.ratio
         }).drawText({
@@ -299,6 +316,7 @@
           x: 20 * _this.ratio, y: 60 * _this.ratio,
           fontSize: _this.model.get('fontSize') * _this.ratio,
           fontFamily: _this.model.get('fontFamily'),
+          fontStyle: _this.model.get('fontStyle'),
           lineHeight: 1.3,
           text: _this.model.get('text'),
           maxWidth: 310,
@@ -325,7 +343,22 @@
         text: _this.model.get('text'),
         fontSize: _this.model.get('fontSize') * _this.ratio,
         fontFamily: _this.model.get('fontFamily'),
-        fillStyle: _this.model.get('fontColor')
+        fillStyle: _this.model.get('fontColor'),
+        fontStyle: _this.model.get('fontStyle')
+      });
+
+      _this.$el.drawLayers();
+    },
+
+    updateContrast: function () {
+      var _this = this;
+
+      if (! _this.contrastLayer) {
+        _this.contrastLayer = _this.$el.getLayer('contrast');
+      }
+
+      _this.$el.setLayer(_this.contrastLayer, {
+        fillStyle: _this.model.get('backgroundContrast') ? 'rgba(0, 0, 0, 0.25)' : 'transparent'
       });
 
       _this.$el.drawLayers();

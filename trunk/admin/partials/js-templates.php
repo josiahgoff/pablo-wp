@@ -29,8 +29,22 @@
 			<option value="rgb(22, 142, 234)"<# if ( data.fontColor == 'rgb(22, 142, 234)' ) { #> selected<# } #>>Blue</option>
 			<option value="rgb(238, 79, 79)"<# if ( data.fontColor == 'rgb(238, 79, 79)' ) { #> selected<# } #>>Red</option>
 		</select>
+		<select class="pablo-font-style-select">
+			'normal', 'bold', 'italic', 'bold italic'
+			<option value="normal"<# if ( data.fontStyle == 'normal' ) { #> selected<# } #>>Normal</option>
+			<option value="bold"<# if ( data.fontStyle == 'bold' ) { #> selected<# } #>>Bold</option>
+			<option value="italic"<# if ( data.fontStyle == 'italic' ) { #> selected<# } #>>Italic</option>
+			<option value="bold italic"<# if ( data.fontStyle == 'bold italic' ) { #> selected<# } #>>Bold Italic</option>
+		</select>
 	</p>
-	<div class="pablo-backgrounds"></div>
+	<div class="pablo-backgrounds-wrap">
+		<label class="pablo-background-contrast-label">
+			<input type="checkbox"
+			       class="pablo-background-contrast"<# if ( data.backgroundContrast ) { #> checked<# } #>></input>
+					Contrast
+		</label>
+		<div class="pablo-backgrounds"></div>
+	</div>
 </script>
 
 <script type="text/html" id="tmpl-pablo-backgrounds-list-item">

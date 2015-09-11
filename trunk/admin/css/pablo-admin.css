@@ -20,18 +20,31 @@
 .pablo-app {
     position: relative;
 }
+
 .pablo-controls {
     width: 50%;
     float: left;
 }
+
 .pablo-text {
     width: 96%;
     height: 110px;
 }
+
 .pablo-backgrounds {
     height: 180px;
     overflow: scroll;
 }
+
+.pablo-background-contrast-label {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.pablo-backgrounds-list {
+    margin: 0 0 1em;
+}
+
 .pablo-backgrounds-list-item {
     float: left;
     width: 126px;
@@ -39,22 +52,27 @@
     margin: 0 3px 3px 0;
     overflow: hidden;
 }
+
 .pablo-backgrounds-list-item-thumb {
     max-width: 100%;
 }
+
 .pablo-preview {
     width: 50%;
     float: left;
     position: relative;
     height: 260px;
 }
+
 .pablo-footer {
     position: absolute;
     bottom: 0;
 }
+
 .pablo-actions button {
     float: right;
 }
+
 .pablo-actions .pablo-button-cancel {
     margin-right: 5px;
 }
@@ -67,12 +85,15 @@
     width: 800px;
     margin: 20px auto;
 }
+
 .mfp-bg {
     z-index: 999998 !important; /* override admin bar */
 }
+
 .mfp-wrap {
     z-index: 999999 !important; /* override admin bar */
 }
+
 .smiley-icon:before {
     content: "\f328";
     display: inline-block;
