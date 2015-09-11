@@ -10,6 +10,26 @@
 
 <script type="text/html" id="tmpl-pablo-controls">
 	<textarea name="pablo_text" class="pablo-text">{{data.text}}</textarea>
+	<p>
+		<select class="pablo-font-family-select">
+			<option value="serif"<# if ( data.fontFamily == 'serif' ) { #> selected<# } #>>Serif</option>
+			<option value="sans-serif"<# if ( data.fontFamily == 'sans-serif' ) { #> selected<# } #>>Sans-Serif</option>
+			<option value="cursive"<# if ( data.fontFamily == 'cursive' ) { #> selected<# } #>>Cursive</option>
+		</select>
+		<select class="pablo-font-size-select">
+			<option value="8"<# if ( data.fontSize == 8 ) { #> selected<# } #>>XS</option>
+			<option value="10"<# if ( data.fontSize == 10 ) { #> selected<# } #>>Small</option>
+			<option value="12"<# if ( data.fontSize == 12 ) { #> selected<# } #>>Medium</option>
+			<option value="14"<# if ( data.fontSize == 14 ) { #> selected<# } #>>Large</option>
+			<option value="16"<# if ( data.fontSize == 16 ) { #> selected<# } #>>XL</option>
+		</select>
+		<select class="pablo-font-color-select">
+			<option value="rgb(255, 255, 255)"<# if ( data.fontColor == 'rgb(255, 255, 255)' ) { #> selected<# } #>>White</option>
+			<option value="rgb(50, 59, 67)"<# if ( data.fontColor == 'rgb(50, 59, 67)' ) { #> selected<# } #>>Black</option>
+			<option value="rgb(22, 142, 234)"<# if ( data.fontColor == 'rgb(22, 142, 234)' ) { #> selected<# } #>>Blue</option>
+			<option value="rgb(238, 79, 79)"<# if ( data.fontColor == 'rgb(238, 79, 79)' ) { #> selected<# } #>>Red</option>
+		</select>
+	</p>
 	<div class="pablo-backgrounds"></div>
 </script>
 

@@ -21,6 +21,9 @@
   Pablo.Models.App = Backbone.Model.extend({
     defaults: {
       text: '“When people go to work, they shouldn\'t have to leave their hearts at home.”\r\n\r\n– Betty Bender',
+      fontFamily: 'serif',
+      fontColor: 'rgb(255, 255, 255)',
+      fontSize: 12,
       background: pablo.imgUrlRoot + '1.jpg'
     },
 
@@ -124,7 +127,10 @@
     className: 'pablo-controls',
 
     events: {
-      'keyup .pablo-text': 'updateText'
+      'keyup .pablo-text': 'updateText',
+      'change .pablo-font-family-select': 'updateFontFamily',
+      'change .pablo-font-size-select': 'updateFontSize',
+      'change .pablo-font-color-select': 'updateFontColor'
     },
 
     initialize: function () {
@@ -156,9 +162,19 @@
     },
 
     updateText: function (e) {
-      var text = $(e.target).val();
+      this.model.set('text', $(e.target).val());
+    },
 
-      this.model.set('text', text);
+    updateFontFamily: function (e) {
+      this.model.set('fontFamily', $(e.target).val());
+    },
+
+    updateFontSize: function (e) {
+      this.model.set('fontSize', $(e.target).val());
+    },
+
+    updateFontColor: function (e) {
+      this.model.set('fontColor', $(e.target).val());
     }
   });
 
@@ -243,7 +259,7 @@
     initialize: function () {
       this.ratio = 1;
 
-      this.model.on('change:text', this.updateText, this);
+      this.model.on('change:text change:fontFamily change:fontColor change:fontSize', this.updateText, this);
       this.model.on('change:background', this.updateBackground, this);
       this.listenTo(Pablo.Events, 'pablo:submit', this.getCanvasImage);
     },
@@ -279,10 +295,10 @@
           height: 240 * _this.ratio
         }).drawText({
           name: 'text',
-          fillStyle: '#fff',
+          fillStyle: _this.model.get('fontColor'),
           x: 20 * _this.ratio, y: 60 * _this.ratio,
-          fontSize: 22,
-          fontFamily: 'Merriweather, serif',
+          fontSize: _this.model.get('fontSize') * _this.ratio,
+          fontFamily: _this.model.get('fontFamily'),
           lineHeight: 1.3,
           text: _this.model.get('text'),
           maxWidth: 310,
@@ -306,7 +322,10 @@
       }
 
       _this.$el.setLayer(_this.textLayer, {
-        text: _this.model.get('text')
+        text: _this.model.get('text'),
+        fontSize: _this.model.get('fontSize') * _this.ratio,
+        fontFamily: _this.model.get('fontFamily'),
+        fillStyle: _this.model.get('fontColor')
       });
 
       _this.$el.drawLayers();
