@@ -10,6 +10,11 @@
 
 <script type="text/html" id="tmpl-pablo-controls">
 	<textarea name="pablo_text" class="pablo-text">{{data.text}}</textarea>
+	<div class="pablo-backgrounds"></div>
+</script>
+
+<script type="text/html" id="tmpl-pablo-backgrounds-list-item">
+	<img src="{{data.thumb}}" class="pablo-backgrounds-list-item-thumb">
 </script>
 
 <script type="text/html" id="tmpl-pablo-actions">

@@ -26,7 +26,21 @@
 }
 .pablo-text {
     width: 96%;
-    height: 240px;
+    height: 150px;
+}
+.pablo-backgrounds {
+    height: 180px;
+    overflow: scroll;
+}
+.pablo-backgrounds-list-item {
+    float: left;
+    width: 126px;
+    height: 72px;
+    margin: 0 3px 3px 0;
+    overflow: hidden;
+}
+.pablo-backgrounds-list-item-thumb {
+    max-width: 100%;
 }
 .pablo-preview {
     width: 50%;
@@ -50,9 +64,7 @@
     position: relative;
     background: #FFF;
     padding: 20px;
-    width: auto;
     width: 800px;
-    height: 400px;
     margin: 20px auto;
 }
 .mfp-bg {

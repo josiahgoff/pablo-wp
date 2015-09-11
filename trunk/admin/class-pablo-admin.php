@@ -130,7 +130,7 @@ class Pablo_Admin {
 		);
 
 		wp_localize_script($this->plugin_name, 'pablo', array(
-			'imgUrl' => plugins_url('img/lake.jpg', __FILE__),
+			'imgUrlRoot' => plugins_url('img/', __FILE__),
 		));
 
 		// Lightbox
