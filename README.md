@@ -1,8 +1,10 @@
 # Pablo WP
 
-The unofficial Pablo WordPress plugin. Right now it's in prototype phase, sort of a proof of concept of how it could work.
+This is a proof of concept for how [Pablo by Buffer](https://buffer.com/pablo) could be turned into a WordPress plugin.
 
-![Screenshot](assets/pablo-wp-screenshot.gif)
+Check out the [screencast](https://www.youtube.com/watch?v=R0IUpYU9XTk).
+
+_Note: This plugin has only been tested in Chrome. Pablo at your own risk._
 
 
 ## Installation
