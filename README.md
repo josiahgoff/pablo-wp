@@ -47,7 +47,6 @@ local testing environment in a few easy steps:
    vagrant ssh -c 'cd /vagrant && ln -s /vagrant/pablo-wp/trunk /vagrant/content/plugins/pablo-wp && wp plugin activate pablo-wp'
    ```
 
-6. Sign up at [Avatars.io](http://avatars.io) for free to get your API credentials and input them through the dashboard settings panel.
 
 You're done! You should now have a WordPress site available at
 http://vagrant.local.
